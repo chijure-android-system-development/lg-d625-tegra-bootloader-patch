@@ -1,0 +1,10 @@
+*.bin
+*.img
+*.cfg
+*.exe
+*.dll
+*.pcap
+*.pcapng
+__pycache__/
+private/
+out/
