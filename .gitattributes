@@ -1,1 +1,2 @@
 /bct/bct-original-slot.cfg -text -diff
+/tools/nvflash.exe -text -diff

@@ -35,6 +35,9 @@ raw omite esa actualización y puede provocar fallback a RBL o impedir el arranq
 
 Se probó **nvflash 4.10.1800 original** con el servidor RAM del Wiko Wax,
 el BCT original del D625 y la tabla de particiones leída del dispositivo.
+El [ejecutable Windows probado](tools/nvflash.exe) está incluido en `tools/`;
+su SHA256 es `000fa264d6614a1d3490b81c0e8fba5a72b0f70e74ca8141e108229dc7fab466`.
+Consultar [la documentación de la herramienta](tools/README.md).
 El [BCT original probado](bct/bct-original-slot.cfg) está incluido, junto con
 [su procedencia y SHA256](bct/README.md). Corresponde a nuestra unidad D62510c;
 no se ha comprobado su compatibilidad con otras unidades o configuraciones RAM.
@@ -47,15 +50,15 @@ SOS/recovery=16**. Mantener la batería colocada al trabajar en APX.
 2. Cargar el servidor en RAM y leer la tabla:
 
 ```powershell
-nvflash.exe --bct bct/bct-original-slot.cfg --getpartitiontable ptable.txt --bl wiko-bootloader-server.bin --go
+.\tools\nvflash.exe --bct bct/bct-original-slot.cfg --getpartitiontable ptable.txt --bl wiko-bootloader-server.bin --go
 ```
 
 3. Confirmar el layout y respaldar antes de instalar:
 
 ```powershell
-nvflash.exe --resume --read 5 ebt-before.bin
-nvflash.exe --resume --read 4 rbl-before.bin
-nvflash.exe --resume --rawdeviceread 0 1024 bct-before.bin
+.\tools\nvflash.exe --resume --read 5 ebt-before.bin
+.\tools\nvflash.exe --resume --read 4 rbl-before.bin
+.\tools\nvflash.exe --resume --rawdeviceread 0 1024 bct-before.bin
 ```
 
 La última operación es solamente lectura. Sus unidades son sectores nvflash
@@ -65,7 +68,7 @@ el original esperado. Conservar también el BCT original y los respaldos complet
 4. Instalar solamente EBT, conservando RBL original:
 
 ```powershell
-nvflash.exe --resume --download 5 ebt-patched-v2.bin --sync
+.\tools\nvflash.exe --resume --download 5 ebt-patched-v2.bin --sync
 ```
 
 En la prueba, `--sync` terminó con código 0 y desapareció la conexión USB.
@@ -73,9 +76,9 @@ Reiniciar físicamente para arrancar Android. Para verificar por lectura,
 entrar nuevamente en APX y repetir el bootstrap del paso 2 antes de:
 
 ```powershell
-nvflash.exe --resume --read 5 ebt-after.bin
-nvflash.exe --resume --read 4 rbl-after.bin
-nvflash.exe --resume --rawdeviceread 0 1024 bct-after.bin
+.\tools\nvflash.exe --resume --read 5 ebt-after.bin
+.\tools\nvflash.exe --resume --read 4 rbl-after.bin
+.\tools\nvflash.exe --resume --rawdeviceread 0 1024 bct-after.bin
 ```
 
 El candidato debe coincidir byte por byte con el inicio de EBT. RBL debe
@@ -105,7 +108,7 @@ Después del mismo bootstrap APX, instalar el original usando el flujo
 administrado para restaurar también sus metadatos de integridad:
 
 ```powershell
-nvflash.exe --resume --download 5 bootloader-original.bin --sync
+.\tools\nvflash.exe --resume --download 5 bootloader-original.bin --sync
 ```
 
 No restaurar solamente el BCT original mientras queda EBT parcheado.
@@ -121,10 +124,12 @@ queda disponible con su checkpoint `recovery-v0.1.0`.
 | `evidence/unlock-2026-10-13.json` | Evidencia sanitizada de la prueba de hardware |
 | `bct/bct-original-slot.cfg` | BCT binario original verificado de la unidad D62510c, 5424 bytes |
 | `bct/SHA256SUMS` | SHA256 del BCT incluido |
+| `tools/nvflash.exe` | nvflash Windows original 4.10.1800 usado en la prueba |
+| `tools/SHA256SUMS` | SHA256 del ejecutable incluido |
 
-Se incluye solamente el BCT original documentado. Los bootloaders, imágenes
-Android, ejecutables de terceros, dumps completos y registros privados no se
-distribuyen en este repositorio. Conservar respaldos propios.
+Se incluyen el BCT original documentado y el nvflash original probado.
+Los bootloaders, imágenes Android, dumps completos y registros privados
+no se distribuyen en este repositorio. Conservar respaldos propios.
 El generador usa solamente la biblioteca estándar de Python.
 
 ## Referencias

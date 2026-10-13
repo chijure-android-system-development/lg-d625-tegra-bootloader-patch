@@ -3,6 +3,7 @@
 *.cfg
 !bct/bct-original-slot.cfg
 *.exe
+!tools/nvflash.exe
 *.dll
 *.pcap
 *.pcapng

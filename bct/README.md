@@ -37,7 +37,7 @@ sha256sum -c bct/SHA256SUMS
 Como entrada del bootstrap en APX, con la batería colocada:
 
 ```powershell
-nvflash.exe --bct bct/bct-original-slot.cfg --getpartitiontable ptable.txt --bl wiko-bootloader-server.bin --go
+.\tools\nvflash.exe --bct bct/bct-original-slot.cfg --getpartitiontable ptable.txt --bl wiko-bootloader-server.bin --go
 ```
 
 Este archivo es el BCT **original**; no representa los metadatos posteriores
