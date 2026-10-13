@@ -35,6 +35,9 @@ raw omite esa actualización y puede provocar fallback a RBL o impedir el arranq
 
 Se probó **nvflash 4.10.1800 original** con el servidor RAM del Wiko Wax,
 el BCT original del D625 y la tabla de particiones leída del dispositivo.
+El [BCT original probado](bct/bct-original-slot.cfg) está incluido, junto con
+[su procedencia y SHA256](bct/README.md). Corresponde a nuestra unidad D62510c;
+no se ha comprobado su compatibilidad con otras unidades o configuraciones RAM.
 El servidor Wiko y el candidato LG son archivos diferentes. No usar el
 BCT Wiko ni copiar sus números de partición: en este D625 **EBT=5, RBL=4,
 SOS/recovery=16**. Mantener la batería colocada al trabajar en APX.
@@ -44,7 +47,7 @@ SOS/recovery=16**. Mantener la batería colocada al trabajar en APX.
 2. Cargar el servidor en RAM y leer la tabla:
 
 ```powershell
-nvflash.exe --bct bct-original-slot.cfg --getpartitiontable ptable.txt --bl wiko-bootloader-server.bin --go
+nvflash.exe --bct bct/bct-original-slot.cfg --getpartitiontable ptable.txt --bl wiko-bootloader-server.bin --go
 ```
 
 3. Confirmar el layout y respaldar antes de instalar:
@@ -116,9 +119,12 @@ queda disponible con su checkpoint `recovery-v0.1.0`.
 | `validate_and_patch_ebt.py` | Generador v2 con validación SHA256 de entrada y salida |
 | `BOOTLOADER_PATCH_ANALYSIS.md` | Instrucciones, diferencias de offsets, integridad y resultados |
 | `evidence/unlock-2026-10-13.json` | Evidencia sanitizada de la prueba de hardware |
+| `bct/bct-original-slot.cfg` | BCT binario original verificado de la unidad D62510c, 5424 bytes |
+| `bct/SHA256SUMS` | SHA256 del BCT incluido |
 
-Los binarios de firmware, BCT, ejecutables de terceros, dumps y registros
-privados no se distribuyen en este repositorio. Utilizar respaldos propios.
+Se incluye solamente el BCT original documentado. Los bootloaders, imágenes
+Android, ejecutables de terceros, dumps completos y registros privados no se
+distribuyen en este repositorio. Conservar respaldos propios.
 El generador usa solamente la biblioteca estándar de Python.
 
 ## Referencias
