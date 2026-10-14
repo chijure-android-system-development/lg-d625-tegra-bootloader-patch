@@ -12,7 +12,7 @@ tested on real hardware by loading the image temporarily with `fastboot boot`.
 
 | Feature | Status |
 |---|---|
-| Display, touch, brightness, battery | Works |
+| Display, touch, brightness, battery | Works (EMC floor fixes lines without USB) |
 | ADB | Works |
 | Internal storage (`/data/media`) | Works |
 | Backup of System, Data and Boot (1945 MB, split archive) | Works, MD5 verified |
@@ -89,6 +89,18 @@ RECOVERY_GRAPHICS_FORCE_USE_LINELENGTH := true
 RECOVERY_GRAPHICS_FORCE_SINGLE_BUFFER := true
 TW_THEME := portrait_hdpi
 ```
+
+### Display glitches without USB
+
+Without USB nothing in recovery requests memory bandwidth, and EMC drops to
+25.5 MHz. The display controller then cannot fetch the 540x960x32bpp
+framebuffer (about 124 MB/s at 60 Hz) and short white horizontal lines appear.
+With USB connected the UDC keeps EMC at 102 MHz or more, which hides it.
+
+`recovery/root/init.recovery.g2mv.rc` mounts debugfs and sets the shared
+`floor.emc` clock to 102 MHz on boot. Measured unplugged: before, EMC spent
+seconds at 25.5 MHz with visible lines; after, it never went below 102 MHz and
+no lines appeared.
 
 `portrait_hdpi` has a 9:16 reference resolution and therefore scales evenly to
 the D625 panel. The recovery header displays `3.1.1-1 by chijure` through
