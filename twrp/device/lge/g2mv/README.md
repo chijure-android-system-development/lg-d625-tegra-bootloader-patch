@@ -18,24 +18,64 @@ tested on real hardware by loading the image temporarily with `fastboot boot`.
 | Backup of System, Data and Boot (1945 MB, split archive) | Works, MD5 verified |
 | Backup of LG/Icera partitions (MDM, CST, MPT, ...) | Works, matches raw `dd` dumps |
 | Restore of Boot, System (split archive) and Data | Works, Android boots |
+| Recovery via hardware keys (Vol- + Power taps) | Works |
 | MicroSD | Not tested |
 | MTP, exFAT, `/data` decryption | Not included |
 
 ## Entering recovery
 
-From Android or TWRP: `adb reboot recovery`.
+### From Android or TWRP
 
-With the keys, the D625 bootloader (`LgeBootMain`) only offers LG's factory
-reset screen, and only with **USB unplugged**:
+```bash
+adb reboot recovery
+```
 
-1. Power off and unplug the USB cable.
-2. Hold **Vol- + Power**. When the LG logo appears, release Power for about
-   one second while still holding Vol-, then press Power again.
-3. On "Factory Reset", confirm with **Vol-**.
+`adb reboot bootloader` (or TWRP's Reboot → Bootloader) opens fastboot. The
+bootloader contains an NVIDIA menu for that mode ("Press <Volume Down> to
+select, <Volume Up> for selection move", with a "Recovery mode" entry); this
+path has not been tested yet. There is no key combination that enters
+fastboot from power-off.
 
-The bootloader then writes `recovery\n--wipe_data` to MSC and boots SOS.
-This build sets `TW_IGNORE_MISC_WIPE_DATA`, so TWRP opens without wiping.
+### With the keys (phone off)
+
+The well-known LG combo ("release Power at the logo and press it again") does
+not work on the D625. Tested sequence:
+
+1. Power off and **unplug the USB cable**. The combo is ignored with USB.
+2. Hold **Vol-** and keep it held until TWRP appears.
+3. Hold **Power** until the LG logo appears.
+4. **Release Power** as soon as the logo appears.
+5. Immediately **tap Power 2-3 times**: press about 0.3 s, release about
+   0.3 s. Very quick taps are not counted.
+6. The "Factory Reset" screen appears and is confirmed by the held Vol-.
+   TWRP starts.
+
+This build sets `TW_IGNORE_MISC_WIPE_DATA`, so **no data is wiped** even though
+the screen says "Factory Reset". Do not use this combo with stock recovery or
+with a TWRP build without that flag: the bootloader writes
+`recovery\n--wipe_data` to MSC and stock recovery will wipe `/data`.
+
 Vol+ with USB connected enters LG download (LAF) mode instead.
+
+### Why this sequence
+
+Reverse-engineered from the D62510c bootloader (`LgeBootMain`, EBT offset
+`0xc9d8`) and the D625 kernel (`arch/arm/mach-tegra/lge/board-pda-kbc.c`).
+The power key is the MAX77660 `EN0` input; its interrupt register `GLBINT1`
+(`0x07`) clears on read: press = `EN0_F` (`0x40`), release = `EN0_R` (`0x80`),
+held 1 s = `EN0_1SEC` (`0x20`).
+
+| Bootloader step | Requires | Window |
+|---|---|---|
+| Power-on check | Power held for at least 1 s | — |
+| Boot-mode check | Vol- held, no USB cable (cable type `0xc`) | instant |
+| Phase 1 | any new Power event (the release) | 0.75 s |
+| Phase 2 | a read equal to `0x80` (a clean release) | 2.25 s |
+| Phase 3 | another clean release while Vol- is held | 2.25 s |
+| Factory Reset screen | Vol- confirms; Vol+ cancels and reboots | 10 s |
+
+The register is polled every 150 ms, so a press and release inside the same
+poll read as `0xc0` and are ignored. That is why taps must be slow.
 
 ## Important display settings
 
