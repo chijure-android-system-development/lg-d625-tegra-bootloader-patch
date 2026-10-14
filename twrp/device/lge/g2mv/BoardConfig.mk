@@ -38,6 +38,11 @@ RECOVERY_GRAPHICS_FORCE_USE_LINELENGTH := true
 RECOVERY_GRAPHICS_FORCE_SINGLE_BUFFER := true
 TW_NO_SCREEN_BLANK := true
 
+# The only key combo (Vol- + Power, USB unplugged) goes through LG's factory
+# reset screen, which writes "recovery\n--wipe_data" to MSC. Open TWRP instead
+# of wiping /data.
+TW_IGNORE_MISC_WIPE_DATA := true
+
 # 1080x1920 has the same 9:16 aspect ratio as the D625 framebuffer (540x960),
 # avoiding the non-uniform 480x800 -> 540x960 scaling of portrait_mdpi.
 TW_THEME := portrait_hdpi

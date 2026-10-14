@@ -21,6 +21,22 @@ tested on real hardware by loading the image temporarily with `fastboot boot`.
 | MicroSD | Not tested |
 | MTP, exFAT, `/data` decryption | Not included |
 
+## Entering recovery
+
+From Android or TWRP: `adb reboot recovery`.
+
+With the keys, the D625 bootloader (`LgeBootMain`) only offers LG's factory
+reset screen, and only with **USB unplugged**:
+
+1. Power off and unplug the USB cable.
+2. Hold **Vol- + Power**. When the LG logo appears, release Power for about
+   one second while still holding Vol-, then press Power again.
+3. On "Factory Reset", confirm with **Vol-**.
+
+The bootloader then writes `recovery\n--wipe_data` to MSC and boots SOS.
+This build sets `TW_IGNORE_MISC_WIPE_DATA`, so TWRP opens without wiping.
+Vol+ with USB connected enters LG download (LAF) mode instead.
+
 ## Important display settings
 
 The Tegra framebuffer has padding at the end of each row. These settings are
