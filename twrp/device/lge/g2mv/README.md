@@ -19,7 +19,7 @@ tested on real hardware by loading the image temporarily with `fastboot boot`.
 | Backup of LG/Icera partitions (MDM, CST, MPT, ...) | Works, matches raw `dd` dumps |
 | Restore of Boot, System (split archive) and Data | Works, Android boots |
 | Recovery via hardware keys (Vol- + Power taps) | Works |
-| MicroSD | Not tested |
+| MicroSD (vfat): mount, read/write, backup to card | Works |
 | MTP, exFAT, `/data` decryption | Not included |
 
 ## Entering recovery
