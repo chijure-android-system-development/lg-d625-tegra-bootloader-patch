@@ -8,7 +8,14 @@ arranca mediante `fastboot boot`, sin rechazo de seguridad de LG.
 **Resultado: v2, dos instrucciones modificadas y tres bytes distintos.**
 Fastboot reporta `unlocked: yes` y `secure: no`. La confirmación incluye la
 pantalla de recovery observada por el propietario y lectura posterior de
-EBT, RBL y BCT. TWRP, kernels modificados y otros firmwares no se han probado.
+EBT, RBL y BCT. Otros firmwares no se han probado.
+
+**Actualización 2026-10-16:** con este EBT parcheado, en la misma unidad, ya
+arrancan imágenes propias, no solo la de prueba con la firma alterada:
+TWRP 3.1.1-1 instalado en SOS, y LineageOS 11 con un kernel compilado desde el código
+fuente ([android_kernel_lge_d625](https://github.com/chijure-android-system-development/android_kernel_lge_d625)),
+flasheado en la partición boot. `evidence/unlock-2026-10-13.json` sigue
+siendo el registro de la prueba original del 13 de octubre.
 
 ## Inicio rápido
 
